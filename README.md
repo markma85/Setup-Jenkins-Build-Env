@@ -1,12 +1,32 @@
 # Jenkins Setup Scripts
 
-This repository contains a collection of scripts for setting up Jenkins with various development environments on Ubuntu. These scripts simplify the process of configuring Jenkins along with additional tools and frameworks such as .NET, NodeJS, Java, and more, tailored for building and deploying software projects.
+This repository contains a collection of scripts for setting up Jenkins with various deployment environments on Ubuntu. These scripts simplify the process of configuring Jenkins along with additional tools and frameworks such as .NET, NodeJS, Java, and more, tailored for building and deploying software projects.
+
+## Architecture
+
+```mermaid
+graph TD
+    A[Clients] -->|HTTPS Requests| B[Nginx @port 80]
+    B -->|Proxy| C[Jenkins @port 8080]
+
+    subgraph Cloud VM Instance
+        B
+        C
+    end
+```
+
+### Description:
+
+- **Clients**: Represents external users accessing the system.
+- **Nginx**: Acts as a reverse proxy handling client requests and forwarding them to Jenkins.
+- **Jenkins**: The CI/CD tool for building and deploying applications.
+- **GCP VM Instance**: Groups Nginx and Jenkins within the same virtual machine environment on Google Cloud Platform.
 
 ## Contents
 
-- **[setup_vm.sh](setup_vm.sh)**: A Bash script to configure Jenkins with a .NET build environment on Ubuntu.
+- **[jenkins-dotnet.sh](jenkins-dotnet.sh)**: A Bash script to configure Jenkins with a .NET build environment on Ubuntu.
 
-### Features of `setup_vm.sh`
+### Features of `jenkins-dotnet.sh`
 
 - Updates the system packages.
 - Installs Java Development Kit (JDK) and verifies the installation.
@@ -23,12 +43,12 @@ This repository contains a collection of scripts for setting up Jenkins with var
 
 ## Usage
 
-### Option 1: Direct Execution with `wget`
+### Option 1: Direct Execution
 
 1. Download the script directly:
 
    ```bash
-   https://raw.githubusercontent.com/markma85/Setup-Jenkins-Build-Env/main/jenkins-dotnet.bash
+   wget https://raw.githubusercontent.com/markma85/Setup-Jenkins-Build-Env/main/jenkins-dotnet.bash
    ```
 
 2. Make the script executable:
