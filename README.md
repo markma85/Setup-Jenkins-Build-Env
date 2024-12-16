@@ -23,18 +23,39 @@ This repository contains a collection of scripts for setting up Jenkins with var
 
 ## Usage
 
+### Option 1: Direct Execution with `wget`
+
+1. Download the script directly:
+
+   ```bash
+   https://raw.githubusercontent.com/markma85/Setup-Jenkins-Build-Env/main/jenkins-dotnet.bash
+   ```
+
+2. Make the script executable:
+
+   ```bash
+   chmod +x jenkins-dotnet.bash
+   ```
+
+3. Run the script:
+   ```bash
+   ./jenkins-dotnet.bash
+   ```
+
+### Option 2: Clone the Repository
+
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/jenkins-setup-scripts.git
-   cd jenkins-setup-scripts
+   git clone https://github.com/markma85/Setup-Jenkins-Build-Env.git
+   cd Setup-Jenkins-Build-Env
    ```
 
 2. Run the desired script, for example, to set up Jenkins with a .NET environment:
 
    ```bash
-   chmod +x setup_vm.sh
-   ./setup_vm.sh
+   chmod +x jenkins-dotnet.bash
+   ./jenkins-dotnet.bash
    ```
 
 3. Follow the prompts (e.g., entering your VM's public IP address) and monitor the output for successful installation.
