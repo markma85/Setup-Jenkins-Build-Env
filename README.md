@@ -20,7 +20,7 @@ graph TD
 - **Clients**: Represents external users accessing the system.
 - **Nginx**: Acts as a reverse proxy handling client requests and forwarding them to Jenkins.
 - **Jenkins**: The CI/CD tool for building and deploying applications.
-- **GCP VM Instance**: Groups Nginx and Jenkins within the same virtual machine environment on Google Cloud Platform.
+- **Cloud VM Instance**: Groups Nginx and Jenkins within the same virtual machine environment on Google Cloud Platform.
 
 ## Contents
 
