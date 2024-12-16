@@ -6,7 +6,7 @@ This repository contains a collection of scripts for setting up Jenkins with var
 
 ```mermaid
 graph TD
-    A[Clients] -->|HTTPS Requests| B[Nginx @port 80]
+    A[Clients] -->|HTTPS Requests| B[Nginx @port 443]
     B -->|Proxy| C[Jenkins @port 8080]
 
     subgraph Cloud VM Instance
