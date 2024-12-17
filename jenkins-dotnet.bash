@@ -99,7 +99,7 @@ sudo systemctl restart nginx || exit_with_error "Failed to restart Nginx."
 # Install .NET environment
 echo "[INFO] Installing .NET environment..."
 sudo apt-get install -y dotnet-sdk-8.0 ca-certificates libc6 libgcc-s1 libicu74 liblttng-ust1 libssl3 libstdc++6 libunwind8 zlib1g || exit_with_error ".NET installation failed."
-sudo dotnet tool install ---tool-path /root/.dotnet/tools dotnet-ef || exit_with_error "Failed to install dotnet-ef."
+sudo dotnet tool install --tool-path /root/.dotnet/tools dotnet-ef || exit_with_error "Failed to install dotnet-ef."
 echo 'export PATH="$PATH:/root/.dotnet/tools/"' | sudo tee -a /etc/profile.d/dotnet_env.sh > /dev/null
 source /etc/profile.d/dotnet_env.sh
 
