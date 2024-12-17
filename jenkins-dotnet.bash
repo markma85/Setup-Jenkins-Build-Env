@@ -6,10 +6,40 @@ exit_with_error() {
     exit 1
 }
 
-# Ask user for the public IP address
-read -p "Enter the VM's public IP address: " ip_public
+# Parse command-line arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --ip-public) ip_public="$2"; shift ;;
+        --docker-host) docker_host="$2"; shift ;;
+        --docker-port) docker_port="$2"; shift ;;
+        *) echo "[WARNING] Unknown parameter passed: $1"; exit_with_error "Usage: $0 [--ip-public <ip>] [--docker-host <ip>] [--docker-port <port>]" ;;
+    esac
+    shift
+done
+
+# Ask user for the public IP address, check if the IP address is valid, otherwise let the user re-enter the IP address
 if [[ -z "$ip_public" ]]; then
-    exit_with_error "No public IP address provided. Exiting."
+    read -p "Enter the public IP address: " ip_public
+    while ! [[ "$ip_public" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
+        read -p "Invalid IP address. Please enter a valid public IP address: " ip_public
+    done
+fi
+
+# Ask user for the docker host IP address, check if the IP address is valid, otherwise let the user re-enter the IP address
+if [[ -z "$docker_host" ]]; then
+    read -p "Enter the Docker host IP address: " docker_host
+    while ! [[ "$docker_host" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
+        read -p "Invalid IP address. Please enter a valid Docker host IP address: " docker_host
+    done
+fi
+
+# Ask user for the docker host port number, default is 2375, check if the port number is valid, otherwise let the user re-enter the port number
+if [[ -z "$docker_port" ]]; then
+    read -p "Enter the Docker host port number (default is 2375): " docker_port
+    docker_port=${docker_port:-2375}
+    while ! [[ "$docker_port" =~ ^[0-9]+$ ]]; do
+        read -p "Invalid port number. Please enter a valid Docker host port number: " docker_port
+    done
 fi
 
 # Persist public IP in /etc/profile.d for reboot
@@ -72,6 +102,32 @@ sudo apt-get install -y dotnet-sdk-8.0 ca-certificates libc6 libgcc-s1 libicu74 
 dotnet tool install --global dotnet-ef || exit_with_error "Failed to install dotnet-ef."
 echo 'export PATH="$PATH:$HOME/.dotnet/tools/"' | sudo tee -a /etc/profile.d/dotnet_env.sh > /dev/null
 source /etc/profile.d/dotnet_env.sh
+
+# Install Docker client
+echo "[INFO] Installing Docker client..."
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install -y docker-ce-cli || exit_with_error "Docker client installation failed."
+docker --version || exit_with_error "Docker client verification failed."
+
+
+# Install Docker Compose
+echo "[INFO] Installing Docker Compose..."
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+# Verify Docker Compose installation, if fails, create a symbolic link
+docker-compose --version || sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+# Verify Docker Compose installation
+docker-compose --version || exit_with_error "Docker Compose installation failed."
+# Export docker host
+echo "export DOCKER_HOST=tcp://$docker_host:$docker_port" | sudo tee -a /etc/profile.d/docker_env.sh > /dev/null
 
 # Output Jenkins initial admin password
 echo "[INFO] Setup complete. Access Jenkins at https://${IP_PUBLIC}"

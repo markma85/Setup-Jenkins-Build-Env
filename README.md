@@ -24,15 +24,17 @@ graph TD
 
 ## Contents
 
-- **[jenkins-dotnet.sh](jenkins-dotnet.sh)**: A Bash script to configure Jenkins with a .NET build environment on Ubuntu.
+- **[jenkins-dotnet.bash](jenkins-dotnet.bash)**: A Bash script to configure Jenkins with a .NET build environment, Docker client, and Docker Compose on Ubuntu.
 
-### Features of `jenkins-dotnet.sh`
+### Features of `jenkins-dotnet.bash`
 
+- Accepts command-line parameters for automation or interactive input if no arguments are provided.
 - Updates the system packages.
 - Installs Java Development Kit (JDK) and verifies the installation.
 - Installs and configures Jenkins, ensuring it is running properly.
 - Sets up HTTPS for Jenkins using Nginx and self-signed certificates.
 - Installs .NET SDK and additional dependencies for building .NET projects.
+- Installs Docker client, Docker Compose standalone, and verifies the installation.
 - Outputs the Jenkins initial admin password for first-time login.
 
 ### Upcoming Scripts
@@ -57,9 +59,21 @@ graph TD
    chmod +x jenkins-dotnet.bash
    ```
 
-3. Run the script:
+3. Run the script with optional command-line arguments:
+
+   ```bash
+   ./jenkins-dotnet.bash --ip-public 192.168.1.10 --docker-host 192.168.1.20 --docker-port 2375
+   ```
+
+4. Alternatively, run interactively (if no arguments are provided):
+
    ```bash
    ./jenkins-dotnet.bash
+   ```
+
+5. Access your Jenkins instance in a browser using the IP address you provided:
+   ```
+   https://<your-public-ip>
    ```
 
 ### Option 2: Clone the Repository
@@ -71,25 +85,22 @@ graph TD
    cd Setup-Jenkins-Build-Env
    ```
 
-2. Run the desired script, for example, to set up Jenkins with a .NET environment:
-
-   ```bash
-   chmod +x jenkins-dotnet.bash
-   ./jenkins-dotnet.bash
-   ```
-
-3. Follow the prompts (e.g., entering your VM's public IP address) and monitor the output for successful installation.
-
-4. Access your Jenkins instance in a browser using the IP address you provided:
-   ```
-   https://<your-public-ip>
-   ```
+2. Run the script as described above.
 
 ## Prerequisites
 
 - An Ubuntu-based system (tested on Ubuntu 20.04 and 22.04).
 - Sufficient permissions to run `sudo` commands.
 - Internet connectivity for downloading required packages and tools.
+
+## What This Script Installs
+
+- **JDK**: Required for running Jenkins.
+- **Jenkins**: Automates CI/CD pipelines.
+- **Nginx**: Configured to provide HTTPS access to Jenkins.
+- **.NET SDK**: For building and running .NET applications.
+- **Docker Client**: To interact with Docker servers.
+- **Docker Compose**: To manage multi-container Docker applications.
 
 ## Contributing
 
@@ -116,4 +127,4 @@ This project is licensed under the [MIT License](LICENSE). Feel free to use and 
 
 ## Contact
 
-For questions or support, feel free to reach out via the repository's [Issues](https://github.com/your-username/jenkins-setup-scripts/issues) section.
+For questions or support, feel free to reach out via the repository's [Issues](https://github.com/markma85/Setup-Jenkins-Build-Env/issues) section.
