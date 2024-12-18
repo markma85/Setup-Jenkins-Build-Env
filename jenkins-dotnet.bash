@@ -77,18 +77,18 @@ if [[ ! -f /etc/init.d/jenkins && ! -f /lib/systemd/system/jenkins.service ]]; t
         echo "[INFO] jq is already installed."
     fi
 
-    # Download the plugin list
+    # Process and install plugins
+    echo "[INFO] Installing Jenkins plugins..."
     sudo wget -q -O /tmp/plugins.txt \
         https://raw.githubusercontent.com/markma85/Setup-Jenkins-Build-Env/refs/heads/main/plugins.txt || exit_with_error "Failed to download Jenkins plugins list."
 
-    # Process and install plugins
-    echo "[INFO] Installing Jenkins plugins..."
-    while IFS= read -r plugin; do
-        if [[ -n "$plugin" && ! "$plugin" =~ ^# ]]; then
-            echo "[INFO] Installing plugin: $plugin"
-            sudo java -jar /var/lib/jenkins/jenkins-cli.jar -s http://localhost:8080 install-plugin "$plugin" -deploy || exit_with_error "Failed to install plugin: $plugin"
-        fi
-    done < /tmp/plugins.txt
+    # download Jenkins Plugin Manager Cli from https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar
+    sudo wget -q -O /var/lib/jenkins/jenkins-plugin-manager.jar \
+        https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar || exit_with_error "Failed to download Jenkins Plugin Manager Cli."
+    sudo chown jenkins:jenkins /var/lib/jenkins/jenkins-cli.jar
+    sudo chmod 644 /var/lib/jenkins/jenkins-cli.jar
+
+    sudo java -jar /var/lib/jenkins/jenkins-plugin-manager.jar --war /usr/share/java/jenkins.war --plugin-download-directory /var/lib/jenkins/plugins --plugin-file /tmp/plugins.txt --plugins delivery-pipeline-plugin:1.3.2 deployit-plugin || exit_with_error "Failed to install suggested plugins."
     sudo apt clean
 else
     echo "[INFO] Jenkins is already installed."
