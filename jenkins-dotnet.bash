@@ -85,8 +85,8 @@ if [[ ! -f /etc/init.d/jenkins && ! -f /lib/systemd/system/jenkins.service ]]; t
     # download Jenkins Plugin Manager Cli from https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar
     sudo wget -q -O /var/lib/jenkins/jenkins-plugin-manager.jar \
         https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.13.2/jenkins-plugin-manager-2.13.2.jar || exit_with_error "Failed to download Jenkins Plugin Manager Cli."
-    sudo chown jenkins:jenkins /var/lib/jenkins/jenkins-cli.jar
-    sudo chmod 644 /var/lib/jenkins/jenkins-cli.jar
+    sudo chown jenkins:jenkins /var/lib/jenkins/jenkins-plugin-manager.jar
+    sudo chmod 644 /var/lib/jenkins/jenkins-plugin-manager.jar
 
     sudo java -jar /var/lib/jenkins/jenkins-plugin-manager.jar --war /usr/share/java/jenkins.war --plugin-download-directory /var/lib/jenkins/plugins --plugin-file /tmp/plugins.txt --plugins delivery-pipeline-plugin:1.3.2 deployit-plugin || exit_with_error "Failed to install suggested plugins."
     sudo apt clean
