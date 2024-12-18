@@ -64,7 +64,7 @@ fi
 if ! sudo service jenkins status | grep -q "active (running)"; then
     echo "[INFO] Starting Jenkins service..."
     sudo service jenkins restart || exit_with_error "Failed to start Jenkins service."
-    sudo service jenkins enable || exit_with_error "Failed to enable Jenkins service."
+    sudo systemctl enable jenkins || echo "[WARNING]Failed to enable Jenkins service."
 else
     echo "[INFO] Jenkins service is already running."
 fi
