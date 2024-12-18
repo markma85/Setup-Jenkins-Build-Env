@@ -42,6 +42,14 @@ fi
 # Check if JDK is installed
 if ! command_exists java; then
     echo "[INFO] Installing JDK..."
+    # Check if tzdata is installed
+    if ! dpkg -l | grep -q "^ii  tzdata "; then
+        echo "[INFO] Installing tzdata..."
+        sudo apt-get update && sudo apt-get install -y tzdata || exit_with_error "tzdata installation failed."
+        sudo apt clean
+    else
+        echo "[INFO] tzdata is already installed."
+    fi
     sudo apt install -y fontconfig openjdk-17-jre || exit_with_error "JDK installation failed."
     sudo apt clean
     java --version || exit_with_error "JDK verification failed."
