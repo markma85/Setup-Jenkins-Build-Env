@@ -127,10 +127,9 @@ fi
 # Check if Docker CLI is installed
 if ! command_exists docker; then
     echo "[INFO] Installing Docker client..."
-    sudo apt-get install ca-certificates curl
+    sudo apt-get install ca-certificates curl -y
     sudo install -m 0755 -d /etc/apt/keyrings
-    sudo apt-get install GnuPG
-    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc | sudo gpg --dearmor --yes -o /etc/apt/keyrings/docker.gpg
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
     sudo chmod a+r /etc/apt/keyrings/docker.asc
     echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
@@ -143,6 +142,22 @@ if ! command_exists docker; then
 else
     echo "[INFO] Docker CLI is already installed."
 fi
+
+# Check if Docker Compose is installed
+if ! command_exists docker-compose; then
+    echo "[INFO] Installing Docker Compose..."
+    sudo curl -SL https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    # Verify Docker Compose installation, if fails, create a symbolic link
+    docker-compose --version || sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+    # Verify Docker Compose installation
+    docker-compose --version || exit_with_error "Docker Compose installation failed."
+else
+    echo "[INFO] Docker Compose is already installed."
+fi
+
+# Export docker host
+echo "export DOCKER_HOST=tcp://$docker_host:$docker_port" | sudo tee -a /etc/profile.d/docker_env.sh > /dev/null
 
 # Output Jenkins initial admin password
 echo "[INFO] Setup complete. Access Jenkins at https://${ip_public}"
