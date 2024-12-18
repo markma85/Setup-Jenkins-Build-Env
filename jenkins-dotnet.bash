@@ -66,6 +66,28 @@ if ! command_exists jenkins; then
         sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
     sudo apt-get update || exit_with_error "Jenkins repository update failed."
     sudo apt-get install -y jenkins || exit_with_error "Jenkins installation failed."
+    echo 'export JENKINS_HOME="/var/lib/jenkins"' | sudo tee -a /etc/profile.d/jenkins_env.sh > /dev/null
+    source /etc/profile.d/jenkins_env.sh
+    # Install suggested plugins
+    if ! command -v jq &> /dev/null; then
+        echo "[INFO] Installing jq..."
+        sudo apt-get install -y jq || exit_with_error "jq installation failed."
+        sudo apt clean
+    else
+        echo "[INFO] jq is already installed."
+    fi
+
+    # Download the plugin list
+    sudo wget -q -O /tmp/plugins.txt https://raw.githubusercontent.com/jenkinsci/docker/master/plugins.txt || exit_with_error "Failed to download Jenkins plugins list."
+
+    # Process and install plugins
+    echo "[INFO] Installing Jenkins plugins..."
+    while IFS= read -r plugin; do
+        if [[ -n "$plugin" && ! "$plugin" =~ ^# ]]; then
+            echo "[INFO] Installing plugin: $plugin"
+            sudo java -jar /var/lib/jenkins/jenkins-cli.jar -s http://localhost:8080 install-plugin "$plugin" -deploy || exit_with_error "Failed to install plugin: $plugin"
+        fi
+    done < /tmp/plugins.txt
     sudo apt clean
 else
     echo "[INFO] Jenkins is already installed."
