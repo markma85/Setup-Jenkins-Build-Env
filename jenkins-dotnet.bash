@@ -34,6 +34,7 @@ fi
 if ! command_exists wget; then
     echo "[INFO] Installing wget..."
     sudo apt-get update && sudo apt-get install -y wget || exit_with_error "wget installation failed."
+    sudo apt clean
 else
     echo "[INFO] wget is already installed."
 fi
@@ -42,6 +43,7 @@ fi
 if ! command_exists java; then
     echo "[INFO] Installing JDK..."
     sudo apt install -y fontconfig openjdk-17-jre || exit_with_error "JDK installation failed."
+    sudo apt clean
     java --version || exit_with_error "JDK verification failed."
 else
     echo "[INFO] JDK is already installed."
@@ -56,6 +58,7 @@ if ! command_exists jenkins; then
         sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
     sudo apt-get update || exit_with_error "Jenkins repository update failed."
     sudo apt-get install -y jenkins || exit_with_error "Jenkins installation failed."
+    sudo apt clean
 else
     echo "[INFO] Jenkins is already installed."
 fi
@@ -73,6 +76,7 @@ fi
 if ! command_exists nginx; then
     echo "[INFO] Installing Nginx..."
     sudo apt-get install -y nginx || exit_with_error "Nginx installation failed."
+    sudo apt clean
     sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout /etc/ssl/private/jenkins-selfsigned.key \
         -out /etc/ssl/certs/jenkins-selfsigned.crt -subj "/CN=$ip_public" || exit_with_error "Failed to create self-signed certificate."
@@ -113,6 +117,7 @@ fi
 if ! dotnet tool list --tool-path /root/.dotnet/tools | grep -q "dotnet-ef"; then
     echo "[INFO] Installing dotnet-ef..."
     sudo dotnet tool install --tool-path /root/.dotnet/tools dotnet-ef || exit_with_error "Failed to install dotnet-ef."
+    sudo apt clean
     echo 'export PATH="$PATH:/root/.dotnet/tools/"' | sudo tee -a /etc/profile.d/dotnet_env.sh > /dev/null
     source /etc/profile.d/dotnet_env.sh
 else
@@ -132,6 +137,7 @@ if ! command_exists docker; then
       sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update
     sudo apt-get install -y docker-ce-cli || exit_with_error "Docker client installation failed."
+    sudo apt clean
     docker --version || exit_with_error "Docker client verification failed."
 else
     echo "[INFO] Docker CLI is already installed."
