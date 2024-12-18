@@ -58,7 +58,7 @@ else
 fi
 
 # Check if Jenkins is installed
-if ! command_exists jenkins; then
+if [[ ! -f /etc/init.d/jenkins && ! -f /lib/systemd/system/jenkins.service ]]; then
     echo "[INFO] Installing Jenkins..."
     sudo wget -q -O /usr/share/keyrings/jenkins-keyring.asc \
         https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key || exit_with_error "Failed to download Jenkins keyring."
