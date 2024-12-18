@@ -78,7 +78,8 @@ if [[ ! -f /etc/init.d/jenkins && ! -f /lib/systemd/system/jenkins.service ]]; t
     fi
 
     # Download the plugin list
-    sudo wget -q -O /tmp/plugins.txt https://raw.githubusercontent.com/jenkinsci/docker/master/plugins.txt || exit_with_error "Failed to download Jenkins plugins list."
+    sudo wget -q -O /tmp/plugins.txt \
+        https://raw.githubusercontent.com/markma85/Setup-Jenkins-Build-Env/refs/heads/main/plugins.txt || exit_with_error "Failed to download Jenkins plugins list."
 
     # Process and install plugins
     echo "[INFO] Installing Jenkins plugins..."
