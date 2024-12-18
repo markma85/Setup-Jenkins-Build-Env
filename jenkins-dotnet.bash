@@ -45,7 +45,7 @@ if ! command_exists java; then
     # Check if tzdata is installed
     if ! dpkg -l | grep -q "^ii  tzdata "; then
         echo "[INFO] Installing tzdata..."
-        sudo apt-get update && sudo apt-get install -y tzdata || exit_with_error "tzdata installation failed."
+        sudo apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata || exit_with_error "tzdata installation failed."
         sudo apt clean
     else
         echo "[INFO] tzdata is already installed."
