@@ -57,6 +57,15 @@ else
     echo "[INFO] JDK is already installed."
 fi
 
+# Check if Git is installed
+if ! command_exists git; then
+    echo "[INFO] Installing Git..."
+    sudo apt-get install -y git || exit_with_error "Git installation failed."
+    sudo apt clean
+else
+    echo "[INFO] Git is already installed."
+fi
+
 # Check if Jenkins is installed
 if [[ ! -f /etc/init.d/jenkins && ! -f /lib/systemd/system/jenkins.service ]]; then
     echo "[INFO] Installing Jenkins..."
