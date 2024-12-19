@@ -185,11 +185,11 @@ else
 fi
 
 # Check if dotnet-ef is installed
-if ! dotnet tool list --tool-path /root/.dotnet/tools | grep -q "dotnet-ef"; then
+if ! dotnet tool list --tool-path /usr/lib/dotnet/tools | grep -q "dotnet-ef"; then
     echo "[INFO] Installing dotnet-ef..."
-    sudo dotnet tool install --tool-path /root/.dotnet/tools dotnet-ef || exit_with_error "Failed to install dotnet-ef."
+    sudo dotnet tool install --tool-path /usr/lib/dotnet/tools dotnet-ef || exit_with_error "Failed to install dotnet-ef."
     sudo apt clean
-    echo 'export PATH="$PATH:/root/.dotnet/tools/"' | sudo tee -a /etc/profile.d/dotnet_env.sh > /dev/null
+    sudo ln -s /usr/lib/dotnet/tools/dotnet-ef /usr/bin/dotnet-ef
     source /etc/profile.d/dotnet_env.sh
 else
     echo "[INFO] dotnet-ef is already installed."
