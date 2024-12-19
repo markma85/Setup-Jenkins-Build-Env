@@ -18,3 +18,4 @@ ldap:latest
 email-ext:latest
 mailer:latest
 dark-theme:latest
+envinject:latest
