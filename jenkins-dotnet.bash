@@ -115,12 +115,39 @@ if ! command_exists nginx; then
         -out /etc/ssl/certs/jenkins-selfsigned.crt -subj "/CN=$ip_public" || exit_with_error "Failed to create self-signed certificate."
 
     cat << EOF | sudo tee /etc/nginx/sites-available/jenkins > /dev/null
+upstream jenkins {
+    keepalive 32;
+    server 127.0.0.1:8080;
+}
+map \$http_upgrade \$connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
 server {
     listen 443 ssl;
     server_name $ip_public;
 
     ssl_certificate /etc/ssl/certs/jenkins-selfsigned.crt;
     ssl_certificate_key /etc/ssl/private/jenkins-selfsigned.key;
+
+    root /usr/share/java/jenkins.war;
+    access_log /var/log/nginx/jenkins_access.log;
+    error_log /var/log/nginx/jenkins_error.log;
+
+    ignore_invalid_headers off;
+
+    location ~ "^/static/[0-9a-fA-F]{8}\/(.*)$" {
+        rewrite "^/static/[0-9a-fA-F]{8}\/(.*)" /\$1 last;
+    }
+    location /userContent {
+        root /var/lib/jenkins;
+        if (!-f \$request_filename) {
+            rewrite (.*) /$1 last;
+            break;
+        }
+        sendfile on;
+    }
 
     location / {
         proxy_pass http://127.0.0.1:8080;
