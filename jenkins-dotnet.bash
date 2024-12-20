@@ -16,8 +16,7 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         --ip-public) ip_public="$2"; shift ;;
         --docker-host) docker_host="$2"; shift ;;
-        --docker-port) docker_port="$2"; shift ;;
-        *) echo "[WARNING] Unknown parameter passed: $1"; exit_with_error "Usage: $0 [--ip-public <ip>] [--docker-host <ip>] [--docker-port <port>]" ;;
+        *) echo "[WARNING] Unknown parameter passed: $1"; exit_with_error "Usage: $0 [--ip-public <ip>] [--docker-host <ip>]" ;;
     esac
     shift
 done
@@ -228,7 +227,7 @@ else
 fi
 
 # Export docker host
-echo "export DOCKER_HOST=tcp://$docker_host:$docker_port" | sudo tee -a /etc/profile.d/docker_env.sh > /dev/null
+echo "export DOCKER_HOST=$docker_host" | sudo tee -a /etc/profile.d/docker_env.sh > /dev/null
 
 # Output Jenkins initial admin password
 echo "[INFO] Setup complete. Access Jenkins at https://${ip_public}"

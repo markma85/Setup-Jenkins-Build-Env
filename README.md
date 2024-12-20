@@ -62,7 +62,7 @@ graph TD
 3. Run the script with optional command-line arguments:
 
    ```bash
-   ./jenkins-dotnet.bash --ip-public 192.168.1.10 --docker-host 192.168.1.20 --docker-port 2375
+   ./jenkins-dotnet.bash --ip-public 192.168.1.10 --docker-host ssh://user@192.168.1.20
    ```
 
 4. Alternatively, run interactively (if no arguments are provided):
