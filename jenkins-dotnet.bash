@@ -47,6 +47,15 @@ else
     echo "[INFO] unzip is already installed."
 fi
 
+# Check if curl is installed
+if ! command_exists curl; then
+    echo "[INFO] Installing curl..."
+    sudo apt-get install -y curl || exit_with_error "curl installation failed."
+    sudo apt clean
+else
+    echo "[INFO] curl is already installed."
+fi
+
 # Check if JDK is installed
 if ! command_exists java; then
     echo "[INFO] Installing JDK..."
