@@ -38,6 +38,15 @@ else
     echo "[INFO] wget is already installed."
 fi
 
+# Check if unzip is installed
+if ! command_exists unzip; then
+    echo "[INFO] Installing unzip..."
+    sudo apt-get install -y unzip || exit_with_error "unzip installation failed."
+    sudo apt clean
+else
+    echo "[INFO] unzip is already installed."
+fi
+
 # Check if JDK is installed
 if ! command_exists java; then
     echo "[INFO] Installing JDK..."
@@ -201,6 +210,17 @@ if ! command_exists npm; then
     sudo apt clean
 else
     echo "[INFO] NPM is already installed."
+fi
+
+# Check if AWS Cli is installed
+if ! command_exists aws; then
+    echo "[INFO] Installing AWS CLI..."
+    sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" || exit_with_error "Failed to download AWS CLI."
+    sudo unzip awscliv2.zip || exit_with_error "Failed to extract AWS CLI."
+    sudo ./aws/install || exit_with_error "AWS CLI installation failed."
+    sudo rm -rf aws awscliv2.zip
+else
+    echo "[INFO] AWS CLI is already installed."
 fi
 
 # Check if Docker CLI is installed
