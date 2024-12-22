@@ -194,6 +194,15 @@ else
     echo "[INFO] dotnet-ef is already installed."
 fi
 
+# Check if NPM is installed
+if ! command_exists npm; then
+    echo "[INFO] Installing NPM..."
+    sudo apt-get install -y npm || exit_with_error "NPM installation failed."
+    sudo apt clean
+else
+    echo "[INFO] NPM is already installed."
+fi
+
 # Check if Docker CLI is installed
 if ! command_exists docker; then
     echo "[INFO] Installing Docker client..."
