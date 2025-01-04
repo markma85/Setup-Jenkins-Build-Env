@@ -20,5 +20,6 @@ mailer:latest
 dark-theme:latest
 envinject:latest
 blueocean:latest
-aws-credentials:latest
+pipeline-aws:latest
 build-user-vars-plugin:latest
+discord-notifier:latest
