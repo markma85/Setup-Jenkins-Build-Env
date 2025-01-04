@@ -19,3 +19,6 @@ email-ext:latest
 mailer:latest
 dark-theme:latest
 envinject:latest
+blueocean:latest
+aws-credentials:latest
+build-user-vars-plugin:latest
