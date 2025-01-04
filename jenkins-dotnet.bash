@@ -114,7 +114,7 @@ if [[ ! -f /etc/init.d/jenkins && ! -f /lib/systemd/system/jenkins.service ]]; t
     sudo chown jenkins:jenkins /var/lib/jenkins/jenkins-plugin-manager.jar
     sudo chmod 644 /var/lib/jenkins/jenkins-plugin-manager.jar
 
-    sudo java -jar /var/lib/jenkins/jenkins-plugin-manager.jar --war /usr/share/java/jenkins.war --plugin-download-directory /var/lib/jenkins/plugins --plugin-file /tmp/plugins.txt --plugins delivery-pipeline-plugin:1.3.2 deployit-plugin || exit_with_error "Failed to install suggested plugins."
+    sudo java -jar /var/lib/jenkins/jenkins-plugin-manager.jar --war /usr/share/java/jenkins.war --plugin-download-directory /var/lib/jenkins/plugins --plugin-file /tmp/plugins.txt --plugins delivery-pipeline-plugin:1.3.2 deployit-plugin --verbose || exit_with_error "Failed to install suggested plugins."
     sudo chown -R jenkins:jenkins /var/lib/jenkins
     sudo chmod -R 755 /var/lib/jenkins
     sudo apt clean
