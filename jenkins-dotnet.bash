@@ -118,6 +118,9 @@ if [[ ! -f /etc/init.d/jenkins && ! -f /lib/systemd/system/jenkins.service ]]; t
     sudo chown -R jenkins:jenkins /var/lib/jenkins
     sudo chmod -R 755 /var/lib/jenkins
     sudo apt clean
+    # Restart Jenkins service
+    sudo service jenkins restart || exit_with_error "Failed to restart Jenkins service."
+    sudo systemctl enable jenkins || echo "[WARNING]Failed to enable Jenkins service."
 else
     echo "[INFO] Jenkins is already installed."
 fi
@@ -244,7 +247,7 @@ if ! command_exists docker; then
       $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
       sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update
-    sudo apt-get install -y docker-ce-cli || exit_with_error "Docker client installation failed."
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || exit_with_error "Docker client installation failed."
     sudo apt clean
     docker --version || exit_with_error "Docker client verification failed."
 else
@@ -252,17 +255,17 @@ else
 fi
 
 # Check if Docker Compose is installed
-if ! command_exists docker-compose; then
-    echo "[INFO] Installing Docker Compose..."
-    sudo curl -SL https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    # Verify Docker Compose installation, if fails, create a symbolic link
-    docker-compose --version || sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-    # Verify Docker Compose installation
-    docker-compose --version || exit_with_error "Docker Compose installation failed."
-else
-    echo "[INFO] Docker Compose is already installed."
-fi
+# if ! command_exists docker-compose; then
+#     echo "[INFO] Installing Docker Compose..."
+#     sudo curl -SL https://github.com/docker/compose/releases/download/v2.32.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+#     sudo chmod +x /usr/local/bin/docker-compose
+#     # Verify Docker Compose installation, if fails, create a symbolic link
+#     docker-compose --version || sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+#     # Verify Docker Compose installation
+#     docker-compose --version || exit_with_error "Docker Compose installation failed."
+# else
+#     echo "[INFO] Docker Compose is already installed."
+# fi
 
 # Export docker host
 echo "export DOCKER_HOST=$docker_host" | sudo tee -a /etc/profile.d/docker_env.sh > /dev/null
